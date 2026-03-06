@@ -64,15 +64,24 @@ public:
         }
     }
 
-    T* get() const noexcept { return m_ptr; }
-    T& operator*() const { return *m_ptr; }
-    T* operator->() const noexcept { return m_ptr; }
+    T* get() const noexcept { 
+		return m_ptr; 
+	}
+    T& operator*() const { 
+		return *m_ptr; 
+	}
+
+    T* operator->() const noexcept { 
+		return m_ptr; 
+	}
 
     std::size_t use_count(const SharedPtr& ptr) const noexcept {
         return ptr.m_control->strong_count;
     }
 
-    explicit operator bool() const noexcept { return m_ptr != nullptr; }
+    explicit operator bool() const noexcept { 
+		return m_ptr != nullptr; 
+	}
 
     void reset() noexcept {
         m_control->strong_count--;
@@ -94,9 +103,18 @@ public:
     }
 
     void swap(SharedPtr& other) noexcept {
-        std::swap(m_ptr, other.m_ptr);
-        std::swap(m_control, other.m_control);
-    }
+		T* tmp;
+		detail::ControlBlock* ctmp;
+
+		other.m_ptr = m_ptr;
+		other.m_control = m_control;
+
+		m_ptr = tmp;
+		m_control = ctmp;
+
+		tmp = nullptr;
+		ctmp = nullptr;
+	}
 
 private:
     T* m_ptr;
